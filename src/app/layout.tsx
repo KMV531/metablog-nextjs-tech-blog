@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 // Load Roboto font
 const roboto = Roboto({
@@ -67,7 +70,18 @@ export default function RootLayout({
         {/* ✅ Explicit link fallback (optional, Next will auto inject from metadata too) */}
         <link rel="icon" href="/assets/favicon.png" type="image/png+xml" />
       </head>
-      <body className={`${roboto.variable} antialiased`}>{children}</body>
+      <body className={`${roboto.variable} antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Header />
+          {children}
+          <Footer />
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
