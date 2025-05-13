@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+import { Work_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { ClerkProvider } from "@clerk/nextjs";
 
-// Load Roboto font
-const roboto = Roboto({
-  variable: "--font-roboto",
+const workSans = Work_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "700"], // Choose weights you need
+  weight: ["400", "500", "600", "700"], // Customize weights as needed
+  variable: "--font-work-sans", // Optional: for CSS variable usage
+  display: "swap", // Optional: prevents invisible text during load
 });
 
 export const metadata: Metadata = {
@@ -65,23 +66,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        {/* ✅ Explicit link fallback (optional, Next will auto inject from metadata too) */}
-        <link rel="icon" href="/assets/favicon.png" type="image/png+xml" />
-      </head>
-      <body className={`${roboto.variable} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Header />
-          {children}
-          <Footer />
-        </ThemeProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <head>
+          {/* ✅ Explicit link fallback (optional, Next will auto inject from metadata too) */}
+          <link rel="icon" href="/assets/favicon.png" type="image/png+xml" />
+        </head>
+        <body className={`${workSans.variable} font-sans antialiased`}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Header />
+            {children}
+            <Footer />
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

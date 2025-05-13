@@ -116,7 +116,13 @@
   * {
     @apply border-border outline-ring/50;
   }
+
+  /* globals.css or your main CSS file */
   body {
-    @apply bg-background text-foreground;
+    @apply bg-white text-foreground; /* default background */
+  }
+
+  .dark body {
+    @apply bg-[#181A2A]; /* dark mode background */
   }
 }
