@@ -1,9 +1,10 @@
+import AllPosts from "@/components/AllPosts";
 import React from "react";
 
 const BlogPage = () => {
   return (
     <div>
-      <h1>BlogPage</h1>
+      <AllPosts />
     </div>
   );
 };

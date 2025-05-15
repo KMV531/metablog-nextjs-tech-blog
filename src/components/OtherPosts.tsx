@@ -15,7 +15,7 @@ const OtherPosts = async () => {
     title: string;
     slug: { current: string };
     coverImage: SanityImage; // Strongly type coverImage
-    category: { name: string };
+    category: { name: string; slug: { current: string } };
     author: {
       name: string;
       slug: { current: string };
@@ -51,9 +51,14 @@ const OtherPosts = async () => {
               />
             )}
             <div className="p-4">
-              <p className="dark:bg-transparent  text-[#4B6BFB] rounded-lg p-2 w-max font-medium text-[14px]">
-                {post?.category.name}
-              </p>
+              <Link
+                href={`/category/${post.category.slug.current}`}
+                className="hover:underline transition-all"
+              >
+                <p className="dark:bg-transparent  text-[#4B6BFB] rounded-lg p-2 w-max font-medium text-[14px]">
+                  {post?.category.name}
+                </p>
+              </Link>
               <Link
                 href={`/blog/${post.slug.current}`}
                 className="hover:underline transition-all"

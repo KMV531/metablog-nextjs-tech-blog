@@ -6,7 +6,7 @@ export const POST_QUERY = defineQuery(`
     title,
     slug,
     coverImage,
-    category->{name},
+    category->{name, slug},
     author->{name, slug, image},
     _createdAt
   },
@@ -14,7 +14,15 @@ export const POST_QUERY = defineQuery(`
     title,
     slug,
     coverImage,
-    category->{name},
+    category->{name, slug},
+    author->{name, slug, image},
+    _createdAt
+  },
+  "allPosts": *[_type == "blog"] | order(_createdAt desc) {
+    title,
+    slug,
+    coverImage,
+    category->{name, slug},
     author->{name, slug, image},
     _createdAt
   }

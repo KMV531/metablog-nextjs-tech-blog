@@ -26,9 +26,14 @@ const FeaturedPost = async () => {
 
           {/* Text Container - below image on small screens, absolute on large screens */}
           <div className="bg-white dark:bg-[#181A2A] shadow-lg p-5 flex flex-col space-y-2 mt-6 lg:mt-0 lg:absolute lg:bottom-10 lg:left-30 rounded-lg max-w-xl">
-            <p className="bg-[#4B6BFB] text-white rounded-lg p-2 w-max font-medium text-[14px]">
-              {featuredPost.category.name}
-            </p>
+            <Link
+              href={`/category/${featuredPost.category.slug.current}`}
+              className="hover:underline transition-all"
+            >
+              <p className="bg-[#4B6BFB] text-white rounded-lg p-2 w-max font-medium text-[14px]">
+                {featuredPost.category.name}
+              </p>
+            </Link>
             <Link
               href={`/blog/${featuredPost.slug.current}`}
               className="hover:underline transition-all"
