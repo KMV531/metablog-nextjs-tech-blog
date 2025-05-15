@@ -11,7 +11,6 @@ interface NavProps {
 
 const links = [
   { path: "/", name: "home" },
-  { path: "/about", name: "about" },
   { path: "/blog", name: "blog" },
   { path: "/contact", name: "contact" },
 ];

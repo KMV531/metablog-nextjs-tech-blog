@@ -1,69 +1,78 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+
+// Icons
+import { Search, X } from "lucide-react";
 
 // Components
-import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./ThemeToggle";
 import Logo from "./Logo";
 import Nav from "./Nav";
-import { Search, X } from "lucide-react";
 import MobileNav from "./MobileNav";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input"; // Assuming you have a styled Input component
+import { Input } from "./ui/input";
 import UserAuth from "./UserAuth";
 
 const Header = () => {
-  const [header, setHeader] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
+  // Ensure client-side rendering to avoid hydration issues
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Add scroll listener
   useEffect(() => {
     const handleScroll = () => {
-      setHeader(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 50);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Avoid rendering on server
+  if (!mounted) return null;
+
   return (
     <>
       <header
         className={`${
-          header
-            ? "py-4 bg-[#FFFFFF] shadow-lg dark:bg-[#181A2A]"
+          isScrolled
+            ? "py-4 bg-white shadow-lg dark:bg-[#181A2A]"
             : "py-6 dark:bg-[#181A2A]"
         } sticky top-0 z-30 transition-all px-5 lg:px-0 ${
-          pathname === "/" && "bg-white"
+          pathname === "/" ? "bg-white" : ""
         }`}
       >
-        <div className="container mx-auto">
-          <div className="flex justify-between items-center">
-            <Logo />
-            <div className="flex items-center gap-x-6">
-              {/* Nav */}
-              <Nav
-                containerStyles="hidden xl:flex gap-x-8 items-center"
-                linkStyles="relative text-[#3B3C4A] hover:text-black dark:text-white transition-all"
-                underlineStyles="absolute left-0 top-full h-[2px] bg-primary w-full"
-              />
+        <div className="container mx-auto flex justify-between items-center">
+          <Logo />
+          <div className="flex items-center gap-x-6">
+            <Nav
+              containerStyles="hidden xl:flex gap-x-8 items-center"
+              linkStyles="relative text-[#3B3C4A] hover:text-black dark:text-white transition-all"
+              underlineStyles="absolute left-0 top-full h-[2px] bg-primary w-full"
+            />
+          </div>
+          <div className="flex items-center space-x-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-brand-700 cursor-pointer"
+              onClick={() => setSearchOpen(!searchOpen)}
+            >
+              {searchOpen ? <X size={20} /> : <Search />}
+            </Button>
+            <ThemeToggle />
+            <div className="xl:hidden">
+              <MobileNav />
             </div>
-            <div className="flex space-x-4 items-center cursor-pointer">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-brand-700 cursor-pointer"
-                onClick={() => setSearchOpen(!searchOpen)}
-              >
-                {searchOpen ? <X size={20} /> : <Search />}
-              </Button>
-              <ThemeToggle />
-              <div className="xl:hidden">
-                <MobileNav />
-              </div>
-              <UserAuth />
-            </div>
+            <UserAuth />
           </div>
         </div>
       </header>

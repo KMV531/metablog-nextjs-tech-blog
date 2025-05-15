@@ -1,65 +1,163 @@
-import {DocumentTextIcon} from '@sanity/icons'
-import {defineArrayMember, defineField, defineType} from 'sanity'
+import { defineField, defineType } from "sanity";
 
-export const postType = defineType({
-  name: 'post',
-  title: 'Post',
-  type: 'document',
-  icon: DocumentTextIcon,
+export const postTypes = defineType({
+  name: "blog", // Changed from "blogs" to singular (standard Sanity convention)
+  title: "Blog Post", // More precise
+  type: "document",
   fields: [
     defineField({
-      name: 'title',
-      type: 'string',
+      name: "title",
+      type: "string",
+      title: "Title",
+      validation: (Rule) => Rule.required().max(100), // Added max length
     }),
     defineField({
-      name: 'slug',
-      type: 'slug',
+      name: "slug",
+      type: "slug",
+      title: "Slug",
       options: {
-        source: 'title',
+        source: "title",
+        maxLength: 96, // Added max length
       },
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'author',
-      type: 'reference',
-      to: {type: 'author'},
+      name: "category",
+      title: "Category",
+      type: "reference",
+      to: [{ type: "category" }],
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'mainImage',
-      type: 'image',
+      name: "author",
+      title: "Author",
+      type: "reference",
+      to: [{ type: "author" }],
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "coverImage",
+      type: "image",
+      title: "Cover Image",
       options: {
         hotspot: true,
       },
       fields: [
-        defineField({
-          name: 'alt',
-          type: 'string',
-          title: 'Alternative text',
-        })
-      ]
+        // Added alt text field
+        {
+          name: "alt",
+          type: "string",
+          title: "Alternative Text",
+          validation: (Rule) => Rule.required(),
+        },
+      ],
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'categories',
-      type: 'array',
-      of: [defineArrayMember({type: 'reference', to: {type: 'category'}})],
+      name: "content",
+      type: "array",
+      title: "Content",
+      of: [
+        {
+          type: "block",
+        },
+        {
+          type: "image",
+          fields: [
+            {
+              name: "alt", // Added name property
+              type: "text", // Changed to "text" for consistency
+              title: "Alternative text",
+              validation: (Rule) => Rule.required(), // Added validation
+            },
+          ],
+        },
+      ],
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'publishedAt',
-      type: 'datetime',
+      name: "isFeatured",
+      title: "Featured Post",
+      type: "boolean",
+      initialValue: false,
     }),
     defineField({
-      name: 'body',
-      type: 'blockContent',
+      name: "comments",
+      type: "array",
+      title: "Comments",
+      of: [
+        {
+          type: "object",
+          name: "embeddedComment",
+          fields: [
+            {
+              name: "clerkUserId",
+              type: "string",
+              title: "Clerk User ID",
+              validation: (Rule) => Rule.required(),
+              readOnly: true,
+            },
+            {
+              name: "author",
+              type: "object",
+              title: "Author Info",
+              fields: [
+                {
+                  name: "name",
+                  type: "string",
+                  title: "Name",
+                },
+                {
+                  name: "profileImage",
+                  type: "image",
+                  title: "Profile Image",
+                  options: {
+                    hotspot: true,
+                  },
+                },
+                {
+                  name: "username",
+                  type: "string",
+                  title: "Username",
+                },
+              ],
+            },
+            {
+              name: "content",
+              type: "text",
+              title: "Content",
+              validation: (Rule) => Rule.required().min(5).max(1000),
+            },
+            {
+              name: "postedAt",
+              type: "datetime",
+              title: "Posted At",
+              initialValue: () => new Date().toISOString(),
+              readOnly: true,
+            },
+            {
+              name: "isApproved",
+              type: "boolean",
+              title: "Approved",
+              initialValue: false,
+            },
+          ],
+        },
+      ],
     }),
   ],
   preview: {
     select: {
-      title: 'title',
-      author: 'author.name',
-      media: 'mainImage',
+      title: "title",
+      media: "coverImage",
+      subtitle: "category.name", // Now shows category name directly
     },
     prepare(selection) {
-      const {author} = selection
-      return {...selection, subtitle: author && `by ${author}`}
+      return {
+        title: selection.title,
+        subtitle: `Category: ${selection.subtitle || "Uncategorized"}`,
+        media: selection.media,
+      };
     },
   },
-})
+});

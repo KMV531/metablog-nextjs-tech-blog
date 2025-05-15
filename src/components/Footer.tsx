@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import Image from "next/image";
@@ -10,8 +10,16 @@ import { useTheme } from "next-themes";
 const Footer = () => {
   const { theme } = useTheme();
 
-  // Optionally support system theme
-  const isDark = theme === "dark";
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  const logoSrc =
+    theme === "dark" ? "/assets/Logo_Dark_2.png" : "/assets/Logo_Light_2.png";
 
   return (
     <footer className="bg-[#E8E8EA] py-12 px-6 dark:bg-[#141624]">
@@ -52,12 +60,6 @@ const Footer = () => {
             className="text-[16px] text-[#696A75] dark:text-[#97989F] hover:text-black hover:dark:text-white transition"
           >
             Home
-          </Link>
-          <Link
-            href={"/about"}
-            className="text-[16px] text-[#696A75] dark:text-[#97989F] hover:text-black hover:dark:text-white transition"
-          >
-            About
           </Link>
           <Link
             href={"/blog"}
@@ -111,14 +113,7 @@ const Footer = () => {
       <hr className="border-t border-[#D1D1D6] dark:border-[#97989F] max-w-7xl mt-20 mb-5 mx-auto" />
       <div className="flex flex-col space-y-4 lg:flex-row items-center justify-between max-w-7xl mx-auto">
         <div className="flex items-center">
-          <Image
-            src={
-              isDark ? "/assets/Logo_Dark_2.png" : "/assets/Logo_Light_2.png"
-            }
-            width={48}
-            height={48}
-            alt="MetaBlog logo"
-          />
+          <Image src={logoSrc} width={48} height={48} alt="MetaBlog logo" />
           <div className="flex flex-col">
             <p>
               Meta<span className="font-bold">Blog</span>

@@ -1,26 +1,37 @@
-import {TagIcon} from '@sanity/icons'
-import {defineField, defineType} from 'sanity'
+import { FolderIcon } from "@sanity/icons";
+import { defineField, defineType } from "sanity";
 
 export const categoryType = defineType({
-  name: 'category',
-  title: 'Category',
-  type: 'document',
-  icon: TagIcon,
+  name: "category",
+  title: "Category",
+  type: "document",
+  icon: FolderIcon,
   fields: [
     defineField({
-      name: 'title',
-      type: 'string',
+      name: "name",
+      title: "Category Name",
+      type: "string",
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'slug',
-      type: 'slug',
+      name: "slug",
+      title: "Slug",
+      type: "slug",
       options: {
-        source: 'title',
+        source: "name",
+        maxLength: 96,
       },
-    }),
-    defineField({
-      name: 'description',
-      type: 'text',
+      validation: (Rule) => Rule.required(),
     }),
   ],
-})
+  preview: {
+    select: {
+      title: "name",
+    },
+    prepare(selection) {
+      return {
+        title: selection.title,
+      };
+    },
+  },
+});
