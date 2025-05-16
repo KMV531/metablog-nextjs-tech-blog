@@ -28,3 +28,24 @@ export const POST_QUERY = defineQuery(`
   }
 }
 `);
+
+export const CATEGORY_POSTS_QUERY = (slug: string) => `
+{
+  "featuredPost": *[_type == "blog" && isFeatured == true && references(*[_type == "category" && slug.current == "${slug}"][0]._id)][0] {
+    title,
+    slug,
+    coverImage,
+    category->{name, slug},
+    author->{name, slug, image},
+    _createdAt
+  },
+  "otherPosts": *[_type == "blog" && isFeatured != true && references(*[_type == "category" && slug.current == "${slug}"][0]._id)] | order(_createdAt desc) {
+    title,
+    slug,
+    coverImage,
+    category->{name, slug},
+    author->{name, slug, image},
+    _createdAt
+  }
+}
+`;
