@@ -67,12 +67,6 @@ const Footer = () => {
           >
             Blog
           </Link>
-          <Link
-            href={"/contact"}
-            className="text-[16px] text-[#696A75] dark:text-[#97989F] hover:text-black hover:dark:text-white transition"
-          >
-            Contact
-          </Link>
         </div>
 
         {/* Grid 3 - Categories */}

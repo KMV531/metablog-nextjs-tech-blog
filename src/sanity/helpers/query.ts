@@ -49,3 +49,21 @@ export const CATEGORY_POSTS_QUERY = (slug: string) => `
   }
 }
 `;
+
+export const AUTHOR_PAGE_QUERY = (slug: string) => `
+{
+  "author": *[_type == "author" && slug.current == "${slug}"][0]{
+    name,
+    image,
+    bio,
+    slug
+  },
+  "posts": *[_type == "blog" && author->slug.current == "${slug}"] | order(_createdAt desc){
+    title,
+    slug,
+    coverImage,
+    _createdAt,
+    category->{name, slug}
+  }
+}
+`;
