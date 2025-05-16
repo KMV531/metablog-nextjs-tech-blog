@@ -67,3 +67,61 @@ export const AUTHOR_PAGE_QUERY = (slug: string) => `
   }
 }
 `;
+
+export const BLOG_DETAIL_QUERY = (slug: string) => `
+{
+  "post": *[_type == "blog" && slug.current == "${slug}"][0]{
+    title,
+    slug,
+    _createdAt,
+    coverImage,
+    category->{name, slug},
+    author->{name, slug, image},
+    content,
+    comments[isApproved == true]{
+      clerkUserId,
+      content,
+      postedAt,
+      author {
+        name,
+        username,
+        profileImage
+      }
+    }
+  }
+}
+`;
+
+/*
+export const BLOG_DETAIL_QUERY = (slug: string) => `
+{
+  "post": *[_type == "blog" && slug.current == "${slug}"][0]{
+    title,
+    slug,
+    _createdAt,
+    coverImage,
+    category->{name, slug},
+    author->{name, slug, image},
+    content,
+    comments[isApproved == true]{
+      clerkUserId,
+      content,
+      postedAt,
+      author {
+        name,
+        username,
+        profileImage
+      }
+    }
+  },
+  "relatedPosts": *[_type == "blog" && slug.current != "${slug}" && category->name == ^.post.category->name] | order(_createdAt desc)[0...3]{
+    title,
+    slug,
+    coverImage,
+    _createdAt,
+    category->{name, slug},
+    author->{name, slug, image}
+  }
+}
+`;
+*/
