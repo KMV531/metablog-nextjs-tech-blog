@@ -30,9 +30,7 @@ const Footer = () => {
             About
           </h1>
           <p className="text-[#696A75] dark:text-[#97989F] text-base">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam.
+            Insights, Guides & News on Tech, Business & More.
           </p>
           <div className="pt-2 space-y-1">
             <p className="text-base text-[#696A75] dark:text-[#97989F]">

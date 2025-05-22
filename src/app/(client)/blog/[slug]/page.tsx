@@ -1,8 +1,20 @@
+import CommentSection from "@/components/CommentSection";
 import { fetchBlogDetail } from "@/sanity/helpers";
 import { urlFor } from "@/sanity/lib/image";
 import { PortableText, PortableTextReactComponents } from "next-sanity";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+
+type Comment = {
+  clerkUserId: string;
+  content: string;
+  postedAt: string;
+  author: {
+    username: string;
+    profileImage: string;
+  };
+};
 
 export default async function BlogDetailPage({
   params,
@@ -25,22 +37,22 @@ export default async function BlogDetailPage({
     },
     block: {
       h1: ({ children }) => (
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold my-6 text-gray-800">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold my-6 text-gray-800 dark:text-white">
           {children}
         </h1>
       ),
       h2: ({ children }) => (
-        <h2 className="text-2xl sm:text-3xl font-semibold my-5 text-gray-700">
+        <h2 className="text-2xl sm:text-3xl font-semibold my-5 text-gray-700 dark:text-white">
           {children}
         </h2>
       ),
       h3: ({ children }) => (
-        <h3 className="text-xl sm:text-2xl font-medium my-4 text-gray-600">
+        <h3 className="text-xl sm:text-2xl font-medium my-4 text-gray-600 dark:text-white">
           {children}
         </h3>
       ),
       p: ({ children }) => (
-        <p className="text-lg sm:text-xl leading-relaxed mb-4 text-gray-800">
+        <p className="text-lg sm:text-xl leading-relaxed mb-4 text-gray-800 dark:text-white">
           {children}
         </p>
       ),
@@ -51,10 +63,14 @@ export default async function BlogDetailPage({
         <ol className="list-decimal pl-6 space-y-2">{children}</ol>
       ),
       li: ({ children }) => (
-        <li className="text-lg sm:text-xl text-gray-700">{children}</li>
+        <li className="text-lg sm:text-xl text-gray-700 dark:text-white">
+          {children}
+        </li>
       ),
       strong: ({ children }) => (
-        <strong className="font-semibold text-gray-800">{children}</strong>
+        <strong className="font-semibold text-gray-800 dark:text-white">
+          {children}
+        </strong>
       ),
       em: ({ children }) => (
         <em className="italic text-gray-600">{children}</em>
@@ -82,7 +98,9 @@ export default async function BlogDetailPage({
       <ul className="list-disc pl-6 space-y-2">{children}</ul>
     ),
     listItem: ({ children }) => (
-      <li className="text-lg sm:text-xl text-gray-700">{children}</li>
+      <li className="text-lg sm:text-xl text-gray-700 dark:text-white">
+        {children}
+      </li>
     ),
     hardBreak: () => <br />,
 
@@ -99,10 +117,12 @@ export default async function BlogDetailPage({
       <div className="my-4 p-4 bg-gray-200">{children}</div> // For unknown block styles
     ),
     unknownList: ({ children }) => (
-      <ul className="list-inside pl-4 text-gray-600">{children}</ul> // For unknown list types
+      <ul className="list-inside pl-4 text-gray-600 dark:text-white">
+        {children}
+      </ul> // For unknown list types
     ),
     unknownListItem: ({ children }) => (
-      <li className="list-item text-gray-600">{children}</li> // For unknown list items
+      <li className="list-item text-gray-600 dark:text-white">{children}</li> // For unknown list items
     ),
   };
 
@@ -110,10 +130,15 @@ export default async function BlogDetailPage({
   return (
     <main className="max-w-7xl mx-auto px-5 lg:px-0">
       <section className="flex flex-col pt-10 pb-4 space-y-2">
-        <h1 className="bg-[#4B6BFB] text-white rounded-lg p-2 w-max font-medium text-[14px]">
-          {post.category.name}
-        </h1>
-        <h1 className="text-[36px] text-[#181A2A] font-bold max-w-5xl">
+        <Link
+          href={`/category/${post.category.slug.current}`}
+          className="hover:underline transition-all w-max"
+        >
+          <h1 className="bg-[#4B6BFB] text-white rounded-lg p-2 w-max font-medium text-[14px]">
+            {post.category.name}
+          </h1>
+        </Link>
+        <h1 className="text-[36px] text-[#181A2A] font-bold max-w-5xl dark:text-white">
           {post.title}
         </h1>
         <div className="flex items-center justify-start space-x-4">
@@ -128,8 +153,15 @@ export default async function BlogDetailPage({
             height={30}
             className="rounded-full object-cover"
           />
-          <p className="text-[14px] text-[#696A75] py-2">{post.author?.name}</p>
-          <p className="text-[#696A75] text-[14px] pt-2">
+          <Link
+            href={`/about/${post.author.slug.current}`}
+            className="hover:underline transition-all"
+          >
+            <p className="text-[14px] text-[#696A75] py-2 dark:text-white font-bold">
+              {post.author?.name}
+            </p>
+          </Link>
+          <p className="text-[#696A75] text-[14px] pt-2 dark:text-white">
             {new Date(post._createdAt).toLocaleDateString()}
           </p>
         </div>
@@ -149,6 +181,45 @@ export default async function BlogDetailPage({
             <PortableText value={post?.content} components={customComponents} />
           )}
         </div>
+      </section>
+      {/* Comment Section (Form or "Login to comment") */}
+      <CommentSection blogId={post._id} comments={post.comments || []} />
+
+      {/* Approved Comments */}
+      <section className="mt-12">
+        <h2 className="text-2xl font-semibold mb-4">Comments</h2>
+        {post.comments?.length ? (
+          <ul className="space-y-6">
+            {post.comments.map((comment: Comment, idx: number) => (
+              <li key={idx} className="border-b pb-4">
+                <div className="flex items-center space-x-3 mb-2">
+                  {comment.author?.profileImage && (
+                    <Image
+                      src={comment.author.profileImage}
+                      alt={`${comment.author.username}`}
+                      width={30}
+                      height={30}
+                      className="rounded-full"
+                    />
+                  )}
+                  <div>
+                    <p className="text-sm font-medium">
+                      {comment.author?.username}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-white">
+                      {new Date(comment.postedAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-gray-800 dark:text-white">
+                  {comment.content}
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-600 dark:text-white">No comments yet.</p>
+        )}
       </section>
     </main>
   );

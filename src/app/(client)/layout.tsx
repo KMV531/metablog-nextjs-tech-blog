@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "@/components/ui/sonner";
 
 const workSans = Work_Sans({
   subsets: ["latin"],
@@ -14,7 +15,7 @@ const workSans = Work_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "MetaBlog – Insights, Guides & News on Web Development, AI & Tech",
+  title: "MetaBlog – Insights, Guides & News on Tech, Business & More.",
   description:
     "MetaBlog delivers high-quality articles, tutorials, and news on web development, AI, design systems, and modern tech trends. Stay informed, stay inspired.",
   keywords: [
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
   ],
   metadataBase: new URL(`${process.env.NEXT_PUBLIC_URL}`),
   openGraph: {
-    title: "MetaBlog – Web Dev, AI, Design & Tech Articles",
+    title: "MetaBlog – Insights, Guides & News on Tech, Business & More.",
     description:
       "Explore MetaBlog's curated content on modern web development, AI advancements, and UI/UX trends.",
     url: `${process.env.NEXT_PUBLIC_URL}`,
@@ -81,6 +82,8 @@ export default function RootLayout({
           >
             <Header />
             {children}
+            <Toaster richColors position="bottom-right" />{" "}
+            {/* ✅ enable rich color themes */}
             <Footer />
           </ThemeProvider>
         </body>

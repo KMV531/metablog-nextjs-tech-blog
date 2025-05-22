@@ -103,17 +103,9 @@ export const postTypes = defineType({
               title: "Author Info",
               fields: [
                 {
-                  name: "name",
-                  type: "string",
-                  title: "Name",
-                },
-                {
                   name: "profileImage",
-                  type: "image",
-                  title: "Profile Image",
-                  options: {
-                    hotspot: true,
-                  },
+                  type: "url",
+                  title: "Profile Image URL",
                 },
                 {
                   name: "username",
