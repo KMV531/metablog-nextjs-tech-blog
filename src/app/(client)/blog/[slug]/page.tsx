@@ -176,7 +176,7 @@ export default async function BlogDetailPage({
               {post.category.name}
             </h1>
           </Link>
-          <h1 className="text-[36px] text-[#181A2A] font-bold max-w-5xl dark:text-white">
+          <h1 className="text-lg md:text-2xl lg:text-4xl text-[#181A2A] font-bold max-w-5xl dark:text-white">
             {post.title}
           </h1>
           <div className="flex items-center justify-start space-x-4">
@@ -210,7 +210,7 @@ export default async function BlogDetailPage({
               />
             )}
           </div>
-          <div className="px-0 mx-auto sm:max-w-2xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 leading-8 w-[75%] pb-20">
+          <div className="px-0 mx-auto sm:max-w-3xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 leading-8 w-[85%] pb-20">
             {post?.content && (
               <PortableText
                 value={post?.content}

@@ -12,7 +12,6 @@ export default async function CategoryPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  // Await params to resolve slug dynamically
   const { slug } = await params;
   const data = await fetchCategoryPosts(slug);
 
@@ -25,9 +24,10 @@ export default async function CategoryPage({
 
   const { featuredPost, otherPosts } = data;
   const placeholderImage = "/assets/placeholder-image.jpg";
-  const authorImage = featuredPost.author?.image
-    ? urlFor(featuredPost.author.image).url()
-    : placeholderImage;
+  const authorImage =
+    featuredPost?.author?.image && urlFor(featuredPost.author.image).url()
+      ? urlFor(featuredPost.author.image).url()
+      : placeholderImage;
 
   return (
     <main className="max-w-7xl mx-auto px-4 py-8">
@@ -35,54 +35,62 @@ export default async function CategoryPage({
         {slug.replace(/-/g, " ")} Posts
       </h1>
 
-      {/* Featured Post */}
       {featuredPost && (
         <section>
           <div className="container mx-auto py-5 px-5 lg:px-0">
-            <div className="relative w-full h-full flex flex-col items-center lg:items-start">
-              {featuredPost?.coverImage && (
+            <div className="relative w-full flex flex-col items-center lg:items-start">
+              {/* Featured Image */}
+              {featuredPost.coverImage && (
                 <Image
                   src={urlFor(featuredPost.coverImage).url()}
                   alt={featuredPost.title}
-                  width={700}
+                  width={1200}
                   height={700}
-                  className="object-cover w-full max-w-5xl h-auto rounded-xl mx-auto"
+                  className="object-cover w-full max-w-7xl rounded-xl"
+                  priority
                 />
               )}
 
-              {/* Text Container - below image on small screens, absolute on large screens */}
-              <div className="flex flex-col space-y-2 mt-6 absolute bottom-10 left-40 rounded-lg max-w-2xl">
-                <p className="bg-[#4B6BFB] text-white rounded-lg p-2 w-max font-medium text-[14px]">
+              {/* Dark Overlay on Desktop */}
+              <div className="hidden lg:block absolute inset-0 bg-black/40 rounded-xl z-10" />
+
+              {/* Text Container (over image on desktop, below on mobile) */}
+              <div className="flex flex-col space-y-2 mt-6 lg:mt-0 lg:absolute lg:bottom-10 lg:left-16 lg:z-20 max-w-2xl px-5">
+                <p className="bg-[#4B6BFB] text-white rounded-lg px-3 py-1 w-max font-medium text-[14px]">
                   {featuredPost.category.name}
                 </p>
+
                 <Link
                   href={`/blog/${featuredPost.slug.current}`}
                   className="hover:underline transition-all"
                 >
-                  <h1 className="font-semibold text-xl lg:text-[34px] text-white">
+                  <h1 className="font-semibold text-xl md:text-2xl lg:text-[34px] text-white drop-shadow-md">
                     {featuredPost.title}
                   </h1>
                 </Link>
-                <div className="flex items-center gap-4 mt-2">
-                  <Image
-                    src={authorImage}
-                    alt={featuredPost.author?.name || "Author image"}
-                    width={30}
-                    height={30}
-                    className="rounded-full object-cover"
-                  />
-                  <Link
-                    href={`/about/${featuredPost.author.slug.current}`}
-                    className="hover:underline transition-all"
-                  >
-                    <p className="text-white text-[16px]">
-                      {featuredPost.author.name}
+
+                {featuredPost.author && (
+                  <div className="flex items-center gap-4 mt-2">
+                    <Image
+                      src={authorImage}
+                      alt={featuredPost.author.name || "Author image"}
+                      width={30}
+                      height={30}
+                      className="rounded-full object-cover"
+                    />
+                    <Link
+                      href={`/about/${featuredPost.author.slug.current}`}
+                      className="hover:underline transition-all"
+                    >
+                      <p className="text-white text-[16px]">
+                        {featuredPost.author.name}
+                      </p>
+                    </Link>
+                    <p className="text-sm text-white text-[16px]">
+                      {new Date(featuredPost._createdAt).toLocaleDateString()}
                     </p>
-                  </Link>
-                  <p className="text-sm text-white text-[16px]">
-                    {new Date(featuredPost._createdAt).toLocaleDateString()}
-                  </p>
-                </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -94,11 +102,11 @@ export default async function CategoryPage({
         <h2 className="text-2xl font-bold mb-6 max-w-6xl mx-auto">
           Latest Posts
         </h2>
-        {/* Wrap PaginatedPosts in Suspense */}
         <Suspense fallback={<div>Loading...</div>}>
           <PaginatedCategoryPosts posts={otherPosts} />
         </Suspense>
       </section>
+
       <div className="pt-8">
         <Advertisement />
       </div>

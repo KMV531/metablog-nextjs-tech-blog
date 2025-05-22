@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 // Icons
-import { Search, X } from "lucide-react";
+import { SearchIcon, X } from "lucide-react";
 
 // Components
 import { ThemeToggle } from "./ThemeToggle";
@@ -14,6 +14,7 @@ import MobileNav from "./MobileNav";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import UserAuth from "./UserAuth";
+import { Search } from "./Search";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -66,8 +67,9 @@ const Header = () => {
               className="text-brand-700 cursor-pointer"
               onClick={() => setSearchOpen(!searchOpen)}
             >
-              {searchOpen ? <X size={20} /> : <Search />}
+              {searchOpen ? <X size={20} /> : <SearchIcon size={20} />}
             </Button>
+            <Search show={searchOpen} onClose={() => setSearchOpen(false)} />
             <ThemeToggle />
             <div className="xl:hidden">
               <MobileNav />
