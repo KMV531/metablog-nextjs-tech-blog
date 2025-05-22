@@ -20,8 +20,9 @@ export default function SocialShareButtons({
 }) {
   return (
     <div className="mt-6">
-      <h4 className="text-[#181A2A] text-[16px] dark:text-white mb-2">
-        Was this helpful, share it with someone who needs it!
+      <h4 className="text-[#181A2A] text-lg lg:text-xl dark:text-white font-bold mb-3">
+        Got something out of this? Don&apos;t keep it to yourself—share it with
+        someone else who will too!
       </h4>
       <div className="flex space-x-3">
         <FacebookShareButton url={url} title={title}>
