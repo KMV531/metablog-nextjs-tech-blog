@@ -101,16 +101,19 @@ export const postTypes = defineType({
               name: "author",
               type: "object",
               title: "Author Info",
+              readOnly: true,
               fields: [
                 {
                   name: "profileImage",
                   type: "url",
                   title: "Profile Image URL",
+                  readOnly: true,
                 },
                 {
                   name: "username",
                   type: "string",
                   title: "Username",
+                  readOnly: true,
                 },
               ],
             },
@@ -119,6 +122,7 @@ export const postTypes = defineType({
               type: "text",
               title: "Content",
               validation: (Rule) => Rule.required().min(5).max(1000),
+              readOnly: true,
             },
             {
               name: "postedAt",
