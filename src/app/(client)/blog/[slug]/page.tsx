@@ -1,7 +1,9 @@
 import CommentSection from "@/components/CommentSection";
+import SocialShareButtons from "@/components/SocialShareButtons";
 import { fetchBlogDetail } from "@/sanity/helpers";
 import { urlFor } from "@/sanity/lib/image";
 import { PortableText, PortableTextReactComponents } from "next-sanity";
+import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -30,6 +32,18 @@ export default async function BlogDetailPage({
 
   const { post } = data;
   const placeholderImage = "/assets/placeholder-image.jpg";
+
+  // Inside your component, construct the share URL
+  const blogUrl = `${process.env.NEXT_PUBLIC_URL}/blog/${post?.slug?.current}`;
+  const blogTitle = post.title;
+  const blogCategory = post.category.name;
+  const blogCoverImage = post.coverImage
+    ? urlFor(urlFor(post.coverImage).url())
+        .width(1200)
+        .height(630)
+        .format("jpg") // Ensure extension and compatibility
+        .url()
+    : `${process.env.NEXT_PUBLIC_URL}/assets/Logo.png`; // Ensure this also ends in .webp
 
   const customComponents: PortableTextReactComponents = {
     types: {
@@ -128,99 +142,125 @@ export default async function BlogDetailPage({
 
   // Render the blog post, content blocks, approved comments, and related posts here.
   return (
-    <main className="max-w-7xl mx-auto px-5 lg:px-0">
-      <section className="flex flex-col pt-10 pb-4 space-y-2">
-        <Link
-          href={`/category/${post.category.slug.current}`}
-          className="hover:underline transition-all w-max"
-        >
-          <h1 className="bg-[#4B6BFB] text-white rounded-lg p-2 w-max font-medium text-[14px]">
-            {post.category.name}
-          </h1>
-        </Link>
-        <h1 className="text-[36px] text-[#181A2A] font-bold max-w-5xl dark:text-white">
-          {post.title}
-        </h1>
-        <div className="flex items-center justify-start space-x-4">
-          <Image
-            src={
-              post.author?.image
-                ? urlFor(post.author.image).url()
-                : placeholderImage
-            }
-            alt={post.author?.name || "Author image"}
-            width={30}
-            height={30}
-            className="rounded-full object-cover"
-          />
-          <Link
-            href={`/about/${post.author.slug.current}`}
-            className="hover:underline transition-all"
-          >
-            <p className="text-[14px] text-[#696A75] py-2 dark:text-white font-bold">
-              {post.author?.name}
-            </p>
-          </Link>
-          <p className="text-[#696A75] text-[14px] pt-2 dark:text-white">
-            {new Date(post._createdAt).toLocaleDateString()}
-          </p>
-        </div>
-        <div className="py-[32px]">
-          {post?.coverImage && (
-            <Image
-              src={urlFor(post.coverImage).url()}
-              alt={post.title}
-              width={800}
-              height={800}
-              className="object-cover w-full max-w-4xl h-auto rounded-xl mx-auto"
-            />
-          )}
-        </div>
-        <div className="px-0 mx-auto sm:max-w-2xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 leading-8 w-[75%] pb-28">
-          {post?.content && (
-            <PortableText value={post?.content} components={customComponents} />
-          )}
-        </div>
-      </section>
-      {/* Comment Section (Form or "Login to comment") */}
-      <CommentSection blogId={post._id} comments={post.comments || []} />
+    <>
+      <Head>
+        <title>{blogTitle} - MetaBlog</title>
+        <meta name="description" content={blogCategory} />
 
-      {/* Approved Comments */}
-      <section className="mt-12">
-        <h2 className="text-2xl font-semibold mb-4">Comments</h2>
-        {post.comments?.length ? (
-          <ul className="space-y-6">
-            {post.comments.map((comment: Comment, idx: number) => (
-              <li key={idx} className="border-b pb-4">
-                <div className="flex items-center space-x-3 mb-2">
-                  {comment.author?.profileImage && (
-                    <Image
-                      src={comment.author.profileImage}
-                      alt={`${comment.author.username}`}
-                      width={30}
-                      height={30}
-                      className="rounded-full"
-                    />
-                  )}
-                  <div>
-                    <p className="text-sm font-medium">
-                      {comment.author?.username}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-white">
-                      {new Date(comment.postedAt).toLocaleDateString()}
-                    </p>
+        {/* Open Graph tags */}
+        <meta property="og:title" content={blogTitle} />
+        <meta property="og:description" content={blogCategory} />
+        <meta property="og:image" content={blogCoverImage} />
+        <meta property="og:image:type" content="image/jpg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:type" content="blog" />
+        <meta property="og:url" content={blogUrl} />
+
+        {/* Twitter card tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={blogTitle} />
+        <meta name="twitter:description" content={blogCategory} />
+        <meta name="twitter:image" content={blogCoverImage} />
+      </Head>
+      <main className="max-w-7xl mx-auto px-5 lg:px-0">
+        <section className="flex flex-col pt-10 pb-4 space-y-2">
+          <Link
+            href={`/category/${post.category.slug.current}`}
+            className="hover:underline transition-all w-max"
+          >
+            <h1 className="bg-[#4B6BFB] text-white rounded-lg p-2 w-max font-medium text-[14px]">
+              {post.category.name}
+            </h1>
+          </Link>
+          <h1 className="text-[36px] text-[#181A2A] font-bold max-w-5xl dark:text-white">
+            {post.title}
+          </h1>
+          <div className="flex items-center justify-start space-x-4">
+            <Image
+              src={
+                post.author?.image
+                  ? urlFor(post.author.image).url()
+                  : placeholderImage
+              }
+              alt={post.author?.name || "Author image"}
+              width={30}
+              height={30}
+              className="rounded-full object-cover"
+            />
+            <Link
+              href={`/about/${post.author.slug.current}`}
+              className="hover:underline transition-all"
+            >
+              <p className="text-[14px] text-[#696A75] py-2 dark:text-white font-bold">
+                {post.author?.name}
+              </p>
+            </Link>
+            <p className="text-[#696A75] text-[14px] pt-2 dark:text-white">
+              {new Date(post._createdAt).toLocaleDateString()}
+            </p>
+          </div>
+          <div className="py-[32px]">
+            {post?.coverImage && (
+              <Image
+                src={urlFor(post.coverImage).url()}
+                alt={post.title}
+                width={800}
+                height={800}
+                className="object-cover w-full max-w-4xl h-auto rounded-xl mx-auto"
+              />
+            )}
+          </div>
+          <div className="px-0 mx-auto sm:max-w-2xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 leading-8 w-[75%] pb-20">
+            {post?.content && (
+              <PortableText
+                value={post?.content}
+                components={customComponents}
+              />
+            )}
+          </div>
+          <SocialShareButtons url={blogUrl} title={blogTitle} />
+        </section>
+        {/* Comment Section (Form or "Login to comment") */}
+        <CommentSection blogId={post._id} comments={post.comments || []} />
+
+        {/* Approved Comments */}
+        <section className="mt-12">
+          <h2 className="text-2xl font-semibold mb-4">Comments</h2>
+          {post.comments?.length ? (
+            <ul className="space-y-6">
+              {post.comments.map((comment: Comment, idx: number) => (
+                <li key={idx} className="border-b pb-4">
+                  <div className="flex items-center space-x-3 mb-2">
+                    {comment.author?.profileImage && (
+                      <Image
+                        src={comment.author.profileImage}
+                        alt={`${comment.author.username}`}
+                        width={30}
+                        height={30}
+                        className="rounded-full"
+                      />
+                    )}
+                    <div>
+                      <p className="text-sm font-medium">
+                        {comment.author?.username}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-white">
+                        {new Date(comment.postedAt).toLocaleDateString()}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <p className="text-gray-800 dark:text-white">
-                  {comment.content}
-                </p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-600 dark:text-white">No comments yet.</p>
-        )}
-      </section>
-    </main>
+                  <p className="text-gray-800 dark:text-white">
+                    {comment.content}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-600 dark:text-white">No comments yet.</p>
+          )}
+        </section>
+      </main>
+    </>
   );
 }
