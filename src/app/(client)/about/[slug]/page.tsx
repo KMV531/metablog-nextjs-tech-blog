@@ -7,7 +7,7 @@ import PaginatedAuthors from "@/components/PaginatedAuthors";
 export default async function AuthorPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
   const data = await fetchAuthorPage(slug);
