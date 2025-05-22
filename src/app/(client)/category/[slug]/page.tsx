@@ -5,6 +5,7 @@ import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
 import Advertisement from "@/components/Advertisement";
 import PaginatedCategoryPosts from "@/components/PaginatedCategoryPosts";
+import { Suspense } from "react";
 
 export default async function CategoryPage({
   params,
@@ -93,7 +94,10 @@ export default async function CategoryPage({
         <h2 className="text-2xl font-bold mb-6 max-w-6xl mx-auto">
           Latest Posts
         </h2>
-        <PaginatedCategoryPosts posts={otherPosts} />
+        {/* Wrap PaginatedPosts in Suspense */}
+        <Suspense fallback={<div>Loading...</div>}>
+          <PaginatedCategoryPosts posts={otherPosts} />
+        </Suspense>
       </section>
       <div className="pt-8">
         <Advertisement />

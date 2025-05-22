@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import PaginatedAuthors from "@/components/PaginatedAuthors";
+import { Suspense } from "react";
 
 export default async function AuthorPage({
   params,
@@ -100,7 +101,10 @@ export default async function AuthorPage({
         <h2 className="text-2xl font-bold mb-6 max-w-6xl mx-auto">
           Latest Posts
         </h2>
-        <PaginatedAuthors posts={posts} author={author} />
+        {/* Wrap PaginatedPosts in Suspense */}
+        <Suspense fallback={<div>Loading...</div>}>
+          <PaginatedAuthors posts={posts} author={author} />
+        </Suspense>
       </section>
     </main>
   );

@@ -1,5 +1,6 @@
 import { getPost } from "@/sanity/helpers";
 import PaginatedPosts from "@/components/PaginatedPosts";
+import { Suspense } from "react"; // Import Suspense from React
 
 const BlogPage = async () => {
   const { allPosts } = await getPost();
@@ -11,7 +12,10 @@ const BlogPage = async () => {
   return (
     <section className="container mx-auto px-5 py-10">
       <h1 className="text-4xl font-bold text-center py-10">Blog Page</h1>
-      <PaginatedPosts allPosts={allPosts} />
+      {/* Wrap PaginatedPosts in Suspense */}
+      <Suspense fallback={<div>Loading...</div>}>
+        <PaginatedPosts allPosts={allPosts} />
+      </Suspense>
     </section>
   );
 };
