@@ -73,57 +73,62 @@ const PaginatedAuthorPosts = ({
   return (
     <>
       <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
-        {currentPosts.map((post) => (
-          <div
-            key={post.slug.current}
-            className="bg-white dark:bg-[#181A2A] shadow-md rounded-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
-          >
-            {post.coverImage && (
-              <Image
-                src={urlFor(post.coverImage).url()}
-                alt={post.title}
-                width={400}
-                height={250}
-                className="w-[80%] h-48 mx-auto"
-              />
-            )}
-            <div className="p-4">
-              <Link
-                href={`/category/${post.category.slug.current}`}
-                className="hover:underline transition-all"
-              >
+        {currentPosts.map((post) => {
+          const authorImage = author?.image
+            ? urlFor(author.image).url()
+            : placeholderImage;
+
+          return (
+            <div
+              key={post.slug.current}
+              className="bg-white dark:bg-[#181A2A] shadow-md rounded-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+            >
+              {post.coverImage && (
+                <Image
+                  src={urlFor(post.coverImage).url()}
+                  alt={post.title}
+                  width={400}
+                  height={250}
+                  className="w-[80%] h-48 mx-auto"
+                />
+              )}
+              <div className="p-4">
                 <p className="dark:bg-transparent text-[#4B6BFB] rounded-lg p-2 w-max font-medium text-[14px]">
                   {post.category.name}
                 </p>
-              </Link>
-              <Link
-                href={`/blog/${post.slug.current}`}
-                className="hover:underline transition-all"
-              >
-                <h3 className="text-lg font-semibold dark:text-white">
-                  {post.title}
-                </h3>
-              </Link>
-              <div className="flex items-center justify-start mt-3 gap-3">
-                <Image
-                  src={
-                    author.image ? urlFor(author.image).url() : placeholderImage
-                  }
-                  alt={author.name || "Author"}
-                  width={30}
-                  height={30}
-                  className="rounded-full object-cover"
-                />
-                <p className="text-[#97989F] text-[16px] dark:text-[#97989F]">
-                  {author.name}
-                </p>
-                <p className="text-[#97989F] text-[16px] dark:text-[#97989F] mt-1">
-                  {new Date(post._createdAt).toLocaleDateString()}
-                </p>
+                <Link
+                  href={`/blog/${post.slug.current}`}
+                  className="hover:underline transition-all"
+                >
+                  <h3 className="text-lg font-semibold dark:text-white">
+                    {post.title}
+                  </h3>
+                </Link>
+
+                <div className="flex items-center justify-start mt-3 gap-3">
+                  <Image
+                    src={authorImage}
+                    alt={author?.name || "Author image"}
+                    width={30}
+                    height={30}
+                    className="rounded-full object-cover"
+                  />
+                  <Link
+                    href={`/about/${author.slug.current}`}
+                    className="hover:underline transition-all"
+                  >
+                    <p className="text-[#97989F] text-[16px] dark:text-[#97989F]">
+                      {author.name}
+                    </p>
+                  </Link>
+                  <p className="text-[#97989F] text-[16px] dark:text-[#97989F] mt-1">
+                    {new Date(post._createdAt).toLocaleDateString()}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Pagination Controls - only render if more than one page */}

@@ -24,6 +24,9 @@ export default async function CategoryPage({
 
   const { featuredPost, otherPosts } = data;
   const placeholderImage = "/assets/placeholder-image.jpg";
+  const authorImage = featuredPost.author?.image
+    ? urlFor(featuredPost.author.image).url()
+    : placeholderImage;
 
   return (
     <main className="max-w-7xl mx-auto px-4 py-8">
@@ -61,11 +64,7 @@ export default async function CategoryPage({
                 </Link>
                 <div className="flex items-center gap-4 mt-2">
                   <Image
-                    src={
-                      featuredPost.author?.image
-                        ? urlFor(featuredPost.author.image).url()
-                        : placeholderImage
-                    }
+                    src={authorImage}
                     alt={featuredPost.author?.name || "Author image"}
                     width={30}
                     height={30}

@@ -30,6 +30,9 @@ const HomePage = async () => {
   };
   const { otherPosts } = await getPost();
   const placeholderImage = "/assets/placeholder-image.jpg";
+  const authorImage = featuredPost.author?.image
+    ? urlFor(featuredPost.author.image).url()
+    : placeholderImage;
 
   if (!otherPosts || otherPosts.length === 0) {
     return <p className="text-center">No other posts found.</p>;
@@ -69,11 +72,7 @@ const HomePage = async () => {
             </Link>
             <div className="flex items-center gap-4 mt-2">
               <Image
-                src={
-                  featuredPost.author?.image
-                    ? urlFor(featuredPost.author.image).url()
-                    : placeholderImage
-                }
+                src={authorImage}
                 alt={featuredPost.author?.name || "Author image"}
                 width={30}
                 height={30}

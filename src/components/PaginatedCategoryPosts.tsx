@@ -8,7 +8,6 @@ import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
 
 const POSTS_PER_PAGE = 6;
-const placeholderImage = "/assets/placeholder-image.jpg";
 
 type SanityImage = {
   _type: string;
@@ -55,6 +54,8 @@ const PaginatedCategoryPosts = ({ posts }: { posts: Post[] }) => {
     router.push(`?page=${page}`);
   };
 
+  const placeholderImage = "/assets/placeholder-image.jpg";
+
   if (isPageInvalid) {
     return (
       <div className="text-center py-10 text-red-500 text-lg font-semibold">
@@ -66,60 +67,62 @@ const PaginatedCategoryPosts = ({ posts }: { posts: Post[] }) => {
   return (
     <>
       <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
-        {currentPosts.map((post) => (
-          <div
-            key={post.slug.current}
-            className="bg-white dark:bg-[#181A2A] shadow-md rounded-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
-          >
-            {post.coverImage && (
-              <Image
-                src={urlFor(post.coverImage).url()}
-                alt={post.title}
-                width={400}
-                height={250}
-                className="w-[80%] h-48 mx-auto"
-              />
-            )}
-            <div className="p-4">
-              <p className="dark:bg-transparent text-[#4B6BFB] rounded-lg p-2 w-max font-medium text-[14px]">
-                {post.category.name}
-              </p>
-              <Link
-                href={`/blog/${post.slug.current}`}
-                className="hover:underline transition-all"
-              >
-                <h3 className="text-lg font-semibold dark:text-white">
-                  {post.title}
-                </h3>
-              </Link>
+        {currentPosts.map((post) => {
+          const authorImage = post?.author?.image
+            ? urlFor(post.author.image).url()
+            : placeholderImage;
 
-              <div className="flex items-center justify-start mt-3 gap-3">
+          return (
+            <div
+              key={post.slug.current}
+              className="bg-white dark:bg-[#181A2A] shadow-md rounded-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+            >
+              {post.coverImage && (
                 <Image
-                  src={
-                    post.author.image
-                      ? urlFor(post.author.image).url()
-                      : placeholderImage
-                  }
-                  alt={post.author.name || "Author image"}
-                  width={30}
-                  height={30}
-                  className="rounded-full object-cover"
+                  src={urlFor(post.coverImage).url()}
+                  alt={post.title}
+                  width={400}
+                  height={250}
+                  className="w-[80%] h-48 mx-auto"
                 />
+              )}
+              <div className="p-4">
+                <p className="dark:bg-transparent text-[#4B6BFB] rounded-lg p-2 w-max font-medium text-[14px]">
+                  {post.category.name}
+                </p>
                 <Link
-                  href={`/about/${post.author.slug.current}`}
+                  href={`/blog/${post.slug.current}`}
                   className="hover:underline transition-all"
                 >
-                  <p className="text-[#97989F] text-[16px] dark:text-[#97989F]">
-                    {post.author.name}
-                  </p>
+                  <h3 className="text-lg font-semibold dark:text-white">
+                    {post.title}
+                  </h3>
                 </Link>
-                <p className="text-[#97989F] text-[16px] dark:text-[#97989F] mt-1">
-                  {new Date(post._createdAt).toLocaleDateString()}
-                </p>
+
+                <div className="flex items-center justify-start mt-3 gap-3">
+                  <Image
+                    src={authorImage}
+                    alt={post.author?.name || "Author image"}
+                    width={30}
+                    height={30}
+                    className="rounded-full object-cover"
+                  />
+                  <Link
+                    href={`/about/${post.author.slug.current}`}
+                    className="hover:underline transition-all"
+                  >
+                    <p className="text-[#97989F] text-[16px] dark:text-[#97989F]">
+                      {post.author.name}
+                    </p>
+                  </Link>
+                  <p className="text-[#97989F] text-[16px] dark:text-[#97989F] mt-1">
+                    {new Date(post._createdAt).toLocaleDateString()}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {totalPages > 1 && (

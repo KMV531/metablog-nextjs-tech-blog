@@ -32,6 +32,9 @@ export default async function BlogDetailPage({
 
   const { post } = data;
   const placeholderImage = "/assets/placeholder-image.jpg";
+  const authorImage = post.author?.image
+    ? urlFor(post.author.image).url()
+    : placeholderImage;
 
   // Inside your component, construct the share URL
   const blogUrl = `${process.env.NEXT_PUBLIC_URL}/blog/${post?.slug?.current}`;
@@ -178,11 +181,7 @@ export default async function BlogDetailPage({
           </h1>
           <div className="flex items-center justify-start space-x-4">
             <Image
-              src={
-                post.author?.image
-                  ? urlFor(post.author.image).url()
-                  : placeholderImage
-              }
+              src={authorImage}
               alt={post.author?.name || "Author image"}
               width={30}
               height={30}

@@ -35,7 +35,11 @@ export default async function AuthorPage({
   };
 
   const { author, posts } = data;
+
   const placeholderImage = "/assets/placeholder-image.jpg";
+  const authorImage = author?.image
+    ? urlFor(author.image)?.url()
+    : placeholderImage;
 
   return (
     <main className="max-w-5xl mx-auto px-4 py-8">
@@ -43,7 +47,7 @@ export default async function AuthorPage({
       <section className="flex flex-col items-center justify-center gap-6 mb-12 bg-[#F6F6F7] dark:bg-[#242535] rounded-lg p-4">
         <div className="flex items-center space-x-2">
           <Image
-            src={author?.image ? urlFor(author.image).url() : placeholderImage}
+            src={authorImage}
             alt={author?.name || "Author image"}
             width={64}
             height={64}
