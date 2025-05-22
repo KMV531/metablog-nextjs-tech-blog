@@ -9,7 +9,7 @@ import PaginatedCategoryPosts from "@/components/PaginatedCategoryPosts";
 export default async function CategoryPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
   // Await params to resolve slug dynamically
   const { slug } = await params;

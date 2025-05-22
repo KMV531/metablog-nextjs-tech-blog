@@ -21,7 +21,7 @@ type Comment = {
 export default async function BlogDetailPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
   const { slug } = await params;
   const data = await fetchBlogDetail(slug);

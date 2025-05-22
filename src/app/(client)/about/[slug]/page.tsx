@@ -1,5 +1,3 @@
-// app/author/[slug]/page.tsx
-
 import { fetchAuthorPage } from "@/sanity/helpers";
 import { notFound } from "next/navigation";
 import { urlFor } from "@/sanity/lib/image";
@@ -9,9 +7,8 @@ import PaginatedAuthors from "@/components/PaginatedAuthors";
 export default async function AuthorPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  // Await params to resolve slug dynamically
   const { slug } = await params;
   const data = await fetchAuthorPage(slug);
 

@@ -113,14 +113,9 @@ const PaginatedAuthorPosts = ({
                     height={30}
                     className="rounded-full object-cover"
                   />
-                  <Link
-                    href={`/about/${author.slug.current}`}
-                    className="hover:underline transition-all"
-                  >
-                    <p className="text-[#97989F] text-[16px] dark:text-[#97989F]">
-                      {author.name}
-                    </p>
-                  </Link>
+                  <p className="text-[#97989F] text-[16px] dark:text-[#97989F]">
+                    {author.name}
+                  </p>
                   <p className="text-[#97989F] text-[16px] dark:text-[#97989F] mt-1">
                     {new Date(post._createdAt).toLocaleDateString()}
                   </p>
