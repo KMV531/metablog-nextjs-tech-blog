@@ -66,7 +66,7 @@
    
 2. Install dependencies:
    ```bash
-   npm install
+   npm install --legacy-peer-deps
 
 3. Set up environment variables (create .env):
    ```bash
